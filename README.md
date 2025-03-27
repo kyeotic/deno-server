@@ -27,7 +27,7 @@ For servers that host their own API as well as a compiled front-end, Deno Server
 
 ```ts
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
-import { serveStatic, withCors } from '@kyeotic/server'
+import { serveStatic, withCors, joinDir } from '@kyeotic/server'
 
 import './periods/cron.ts'
 
@@ -56,7 +56,7 @@ async function handler(request: Request) {
       createContext: createAppContext,
     }))
   } else {
-    return serveStatic(request)
+    return serveStatic(request, joinDir(import.meta.url, './dist'))
   }
 }
 ```
