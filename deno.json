@@ -1,13 +1,15 @@
 {
   "name": "@kyeotic/server",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "license": "MIT",
   "tasks": {
     "check": "deno publish --dry-run"
   },
   "imports": {
+    "@panva/jose": "jsr:@panva/jose@^6.0.10",
     "@std/http": "jsr:@std/http@^1.0.13",
-    "@std/path": "jsr:@std/path@^1.0.8"
+    "@std/path": "jsr:@std/path@^1.0.8",
+    "url-join": "npm:url-join@^5.0.0"
   },
   "exports": {
     ".": "./mod.ts",

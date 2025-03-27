@@ -1,6 +1,7 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@panva/jose@^6.0.10": "6.0.10",
     "jsr:@std/cli@^1.0.12": "1.0.14",
     "jsr:@std/encoding@^1.0.7": "1.0.7",
     "jsr:@std/fmt@^1.0.5": "1.0.6",
@@ -9,9 +10,13 @@
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.0.8": "1.0.8",
-    "jsr:@std/streams@^1.0.9": "1.0.9"
+    "jsr:@std/streams@^1.0.9": "1.0.9",
+    "npm:url-join@5": "5.0.0"
   },
   "jsr": {
+    "@panva/jose@6.0.10": {
+      "integrity": "bd6e916d7b0bdb34a76752c701aaa25828326885e199714ac81741b6caef7143"
+    },
     "@std/cli@1.0.14": {
       "integrity": "b09ee9921cd476c0e08185ed2bfce682d45ecf4654f26c31b4aa244a2c5c024e"
     },
@@ -50,10 +55,17 @@
       "integrity": "a9d26b1988cdd7aa7b1f4b51e1c36c1557f3f252880fa6cc5b9f37078b1a5035"
     }
   },
+  "npm": {
+    "url-join@5.0.0": {
+      "integrity": "sha512-n2huDr9h9yzd6exQVnH/jU5mr+Pfx08LRXXZhkLLetAMESRj+anQsTAh940iMrIetKAmry9coFuZQ2jY8/p3WA=="
+    }
+  },
   "workspace": {
     "dependencies": [
+      "jsr:@panva/jose@^6.0.10",
       "jsr:@std/http@^1.0.13",
-      "jsr:@std/path@^1.0.8"
+      "jsr:@std/path@^1.0.8",
+      "npm:url-join@5"
     ]
   }
 }
