@@ -48,7 +48,7 @@ export async function serveStatic(
   return res
 }
 
-/**  */
+/** Creates a CORS handler with sane defaults */
 export function withCors(
   req: Request,
   res: Response,

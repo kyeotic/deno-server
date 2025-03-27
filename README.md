@@ -56,7 +56,7 @@ async function handler(request: Request) {
       createContext: createAppContext,
     }))
   } else {
-    return serveStatic(request, joinDir(import.meta.url, './dist'))
+    return serveStatic(request, { rootDir: joinDir(import.meta.url, './dist') })
   }
 }
 ```
