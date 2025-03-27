@@ -1,0 +1,17 @@
+{
+  "name": "@kyeotic/server",
+  "version": "1.0.0",
+  "license": "MIT",
+  "tasks": {
+    "publish": "deno publish",
+    "check": "deno publish --dry-run"
+  },
+  "imports": {
+    "@std/http": "jsr:@std/http@^1.0.13",
+    "@std/path": "jsr:@std/path@^1.0.8"
+  },
+  "exports": {
+    ".": "./mod.ts",
+    "./spa": "./spa.ts"
+  }
+}
