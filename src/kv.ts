@@ -57,7 +57,7 @@ export async function upsert<T>(
   const existing = await kv.get(key)
   const item = merge((existing?.value as T) ?? null)
 
-  await kv.set(key, item)
+  await kv.atomic().check(existing).set(key, item).commit()
   return item
 }
 
