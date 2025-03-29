@@ -11,6 +11,7 @@
     "jsr:@std/net@^1.0.4": "1.0.4",
     "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/streams@^1.0.9": "1.0.9",
+    "jsr:@std/ulid@1": "1.0.0",
     "npm:url-join@5": "5.0.0"
   },
   "jsr": {
@@ -53,6 +54,9 @@
     },
     "@std/streams@1.0.9": {
       "integrity": "a9d26b1988cdd7aa7b1f4b51e1c36c1557f3f252880fa6cc5b9f37078b1a5035"
+    },
+    "@std/ulid@1.0.0": {
+      "integrity": "d41c3d27a907714413649fee864b7cde8d42ee68437d22b79d5de4f81d808780"
     }
   },
   "npm": {
@@ -65,6 +69,7 @@
       "jsr:@panva/jose@^6.0.10",
       "jsr:@std/http@^1.0.13",
       "jsr:@std/path@^1.0.8",
+      "jsr:@std/ulid@1",
       "npm:url-join@5"
     ]
   }
