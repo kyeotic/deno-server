@@ -1,5 +1,7 @@
-export function makeSet(name: string): (...parts: string[]) => string[] {
-  return (...parts: string[]) => [name, ...parts]
+export function makeSet(
+  name: Deno.KvKeyPart
+): (...parts: Deno.KvKeyPart[]) => Deno.KvKeyPart[] {
+  return (...parts: Deno.KvKeyPart[]) => [name, ...parts]
 }
 
 export async function listAllValues<T>(
