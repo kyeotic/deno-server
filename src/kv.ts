@@ -6,7 +6,7 @@ export function makeSet(
 
 export async function listAllValues<T>(
   kv: Deno.Kv,
-  prefix: string[],
+  prefix: Deno.KvKeyPart[],
   { reverse = false }: { reverse?: boolean } = {}
 ): Promise<T[]> {
   const entries = await Array.fromAsync(kv.list({ prefix }, { reverse }))
@@ -15,7 +15,7 @@ export async function listAllValues<T>(
 
 export async function create<T>(
   kv: Deno.Kv,
-  key: string[],
+  key: Deno.KvKeyPart[],
   item: T
 ): Promise<T> {
   const existing = await kv.get(key)
@@ -31,7 +31,7 @@ export async function create<T>(
 
 export async function update<T>(
   kv: Deno.Kv,
-  key: string[],
+  key: Deno.KvKeyPart[],
   item: T
 ): Promise<T> {
   const existing = await kv.get(key)
@@ -45,7 +45,11 @@ export async function update<T>(
   return item
 }
 
-export async function put<T>(kv: Deno.Kv, key: string[], item: T): Promise<T> {
+export async function put<T>(
+  kv: Deno.Kv,
+  key: Deno.KvKeyPart[],
+  item: T
+): Promise<T> {
   await kv.set(key, item)
 
   return item
@@ -53,7 +57,7 @@ export async function put<T>(kv: Deno.Kv, key: string[], item: T): Promise<T> {
 
 export async function upsert<T>(
   kv: Deno.Kv,
-  key: string[],
+  key: Deno.KvKeyPart[],
   merge: (existing: T | null) => T
 ): Promise<T> {
   const existing = await kv.get(key)
@@ -72,7 +76,10 @@ export async function upsert<T>(
  */
 export async function deleteEntireDb(
   kv: Deno.Kv,
-  { debug = false, prefix = [] }: { debug?: boolean; prefix?: string[] } = {}
+  {
+    debug = false,
+    prefix = [],
+  }: { debug?: boolean; prefix?: Deno.KvKeyPart[] } = {}
 ): Promise<void> {
   const keys = kv.list({ prefix })
   let count = 0

@@ -1,6 +1,6 @@
 {
   "name": "@kyeotic/server",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "license": "MIT",
   "tasks": {
     "check": "deno publish --dry-run"
