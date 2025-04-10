@@ -3,7 +3,7 @@
   "version": "1.4.5",
   "license": "MIT",
   "tasks": {
-    "check": "deno publish --dry-run"
+    "check": "deno publish --dry-run --allow-dirty"
   },
   "imports": {
     "@panva/jose": "jsr:@panva/jose@^6.0.10",

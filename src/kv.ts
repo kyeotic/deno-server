@@ -1,4 +1,4 @@
-// @deno-types="npm:@types/lodash-es"
+// @deno-types="npm:@types/lodash-es@^4"
 import { isEqual, differenceWith, chunk } from 'lodash'
 
 export function makeSet(
