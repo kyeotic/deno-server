@@ -1,6 +1,6 @@
 {
   "name": "@kyeotic/server",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "license": "MIT",
   "tasks": {
     "check": "deno publish --dry-run"
@@ -10,7 +10,7 @@
     "@std/http": "jsr:@std/http@^1.0.13",
     "@std/path": "jsr:@std/path@^1.0.8",
     "@std/ulid": "jsr:@std/ulid@^1.0.0",
-    "lodash-es": "npm:lodash-es@^4.17.21",
+    "lodash": "npm:lodash-es@^4.17.21",
     "url-join": "npm:url-join@^5.0.0"
   },
   "exports": {

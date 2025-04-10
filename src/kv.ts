@@ -1,4 +1,5 @@
-import { isEqual, differenceWith } from 'lodash-es'
+// @deno-types="npm:@types/lodash-es"
+import { isEqual, differenceWith, chunk } from 'lodash'
 
 export function makeSet(
   name: Deno.KvKeyPart
@@ -13,6 +14,20 @@ export async function listAllValues<T>(
 ): Promise<T[]> {
   const entries = await Array.fromAsync(kv.list({ prefix }, { reverse }))
   return entries.map((e) => e.value as T)
+}
+
+export async function batchGet<T>(
+  kv: Deno.Kv,
+  keys: Deno.KvKey[]
+): Promise<T[]> {
+  const chunks = chunk(keys, 10)
+  const results = await Promise.all(
+    chunks.map((chunk) => kv.getMany<T[]>(chunk))
+  )
+  return results
+    .flat()
+    .map((entry) => entry.value)
+    .filter((t) => !!t) as T[]
 }
 
 export async function create<T>(
