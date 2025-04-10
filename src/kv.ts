@@ -91,8 +91,8 @@ export function makeIndexer<
   Val extends Row[Prop] extends Array<infer I> ? I : never
 >(
   prop: keyof Row,
-  keyer: (item: Val) => Deno.KvKeyPart[],
-  selector: (item: Row) => Ref,
+  keyer: (row: Row, item: Val) => Deno.KvKeyPart[],
+  selector: (row: Row) => Ref,
   comparator: (a: Val, b: Val) => boolean = isEqual
 ): (
   txn: Deno.AtomicOperation,
@@ -106,8 +106,8 @@ export function makeIndexer<
       existing,
       prop,
       keyer,
-      comparator,
-      selector
+      selector,
+      comparator
     )
 }
 
@@ -121,9 +121,9 @@ function syncIndex<
   value: Row,
   existing: Row | null,
   prop: keyof Row,
-  keyer: (item: Val) => Deno.KvKeyPart[],
-  comparator: (a: Val, b: Val) => boolean,
-  selector: (item: Row) => Ref
+  keyer: (row: Row, item: Val) => Deno.KvKeyPart[],
+  selector: (row: Row) => Ref,
+  comparator: (a: Val, b: Val) => boolean
 ): Deno.AtomicOperation {
   if (!Array.isArray(value[prop])) {
     throw new Error('index prop must be an array type')
@@ -133,12 +133,12 @@ function syncIndex<
 
   // create new
   differenceWith(value[prop], refs, comparator).forEach((e: Val) =>
-    txn.set(keyer(e), selector(value))
+    txn.set(keyer(value, e), selector(value))
   )
 
   // // delete old
   differenceWith(value[prop] ?? [], refs, comparator).forEach((e: Val) =>
-    txn.delete(keyer(e))
+    txn.delete(keyer(value, e))
   )
 
   return txn
