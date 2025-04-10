@@ -12,6 +12,7 @@
     "jsr:@std/path@^1.0.8": "1.0.8",
     "jsr:@std/streams@^1.0.9": "1.0.9",
     "jsr:@std/ulid@1": "1.0.0",
+    "npm:lodash-es@^4.17.21": "4.17.21",
     "npm:url-join@5": "5.0.0"
   },
   "jsr": {
@@ -60,6 +61,9 @@
     }
   },
   "npm": {
+    "lodash-es@4.17.21": {
+      "integrity": "sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw=="
+    },
     "url-join@5.0.0": {
       "integrity": "sha512-n2huDr9h9yzd6exQVnH/jU5mr+Pfx08LRXXZhkLLetAMESRj+anQsTAh940iMrIetKAmry9coFuZQ2jY8/p3WA=="
     }
@@ -70,6 +74,7 @@
       "jsr:@std/http@^1.0.13",
       "jsr:@std/path@^1.0.8",
       "jsr:@std/ulid@1",
+      "npm:lodash-es@^4.17.21",
       "npm:url-join@5"
     ]
   }
