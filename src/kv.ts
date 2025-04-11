@@ -84,7 +84,7 @@ export async function upsert<T>(
   return item
 }
 
-export function makeIndexer<
+export function associativeIndex<
   Row,
   Ref,
   Prop extends Row[Prop] extends Array<infer I> ? keyof Row : never,
@@ -99,50 +99,51 @@ export function makeIndexer<
   value: Row,
   existing: Row | null
 ) => Deno.AtomicOperation {
-  return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) =>
-    syncIndex<Row, Prop, Val, Ref>(
-      txn,
-      value,
-      existing,
-      prop,
-      keyer,
-      selector,
-      comparator
+  return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) => {
+    if (!Array.isArray(value[prop])) {
+      throw new Error('index prop must be an array type')
+    }
+
+    const refs = (existing ? existing[prop] : []) as Val[]
+
+    // create new
+    differenceWith(value[prop], refs, comparator).forEach((e: Val) =>
+      txn.set(keyer(value, e), selector(value))
     )
+
+    // // delete old
+    differenceWith(value[prop] ?? [], refs, comparator).forEach((e: Val) =>
+      txn.delete(keyer(value, e))
+    )
+
+    return txn
+  }
 }
 
-function syncIndex<
+export function singularIndex<
   Row,
-  Prop extends Row[Prop] extends Array<infer I> ? keyof Row : never,
-  Val extends Row[Prop] extends Array<infer I> ? I : never,
+  Prop extends Row[Prop] extends Deno.KvKeyPart ? keyof Row : never,
   Ref
 >(
+  prop: Prop,
+  selector: (row: Row) => Ref,
+  keyer: (row: Row) => Deno.KvKeyPart[]
+): (
   txn: Deno.AtomicOperation,
   value: Row,
-  existing: Row | null,
-  prop: keyof Row,
-  keyer: (row: Row, item: Val) => Deno.KvKeyPart[],
-  selector: (row: Row) => Ref,
-  comparator: (a: Val, b: Val) => boolean
-): Deno.AtomicOperation {
-  if (!Array.isArray(value[prop])) {
-    throw new Error('index prop must be an array type')
+  existing: Row | null
+) => Deno.AtomicOperation {
+  return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) => {
+    if (existing?.[prop] !== value[prop]) {
+      if (existing) {
+        txn.delete(keyer(existing))
+      }
+      txn.set(keyer(value), selector(value))
+    }
+    return txn
   }
-
-  const refs = (existing ? existing[prop] : []) as Val[]
-
-  // create new
-  differenceWith(value[prop], refs, comparator).forEach((e: Val) =>
-    txn.set(keyer(value, e), selector(value))
-  )
-
-  // // delete old
-  differenceWith(value[prop] ?? [], refs, comparator).forEach((e: Val) =>
-    txn.delete(keyer(value, e))
-  )
-
-  return txn
 }
+
 /**
  * Delete all records from the Deno.kv store
  *
