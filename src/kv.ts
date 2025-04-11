@@ -126,8 +126,8 @@ export function singularIndex<
   Ref
 >(
   prop: Prop,
-  selector: (row: Row) => Ref,
-  keyer: (row: Row) => Deno.KvKeyPart[]
+  keyer: (row: Row) => Deno.KvKeyPart[],
+  selector: (row: Row) => Ref
 ): (
   txn: Deno.AtomicOperation,
   value: Row,
