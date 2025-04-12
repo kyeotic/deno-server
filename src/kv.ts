@@ -115,7 +115,7 @@ export function associativeIndex<Row, Val, Ref>(
 export function singularIndex<Row, Val, Ref>(
   /** Create a key from the row. Returning `null` will not create an index item */
   keyer: (row: Row) => Deno.KvKeyPart[] | null,
-  valueFn: (row: Row) => Val[] | null,
+  valueFn: (row: Row) => Val | null,
   refFn: (row: Row) => Ref
 ): (
   txn: Deno.AtomicOperation,
