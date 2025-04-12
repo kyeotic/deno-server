@@ -54,7 +54,7 @@ export async function update<T>(
   const existing = await kv.get(key)
 
   if (!existing) {
-    throw new Error('Subscription not found')
+    throw new Error('Item not found')
   }
 
   await kv.set(key, item)
