@@ -126,7 +126,8 @@ export function singularIndex<
   Ref
 >(
   prop: Prop,
-  keyer: (row: Row) => Deno.KvKeyPart[],
+  /** Create a key from the row. Returning `null` will not create an index item */
+  keyer: (row: Row) => Deno.KvKeyPart[] | null,
   selector: (row: Row) => Ref
 ): (
   txn: Deno.AtomicOperation,
@@ -136,11 +137,14 @@ export function singularIndex<
   return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) => {
     if (existing?.[prop] !== value[prop]) {
       if (existing) {
-        txn.delete(keyer(existing))
+        const dbKey = keyer(existing)
+        if (!dbKey)
+          throw new Error('keyer must return a key for existing items')
+        txn.delete(dbKey)
       }
-      const val = selector(value)
-      if (val) {
-        txn.set(keyer(value), val)
+      const key = keyer(value)
+      if (key) {
+        txn.set(key, selector(value))
       }
     }
     return txn
