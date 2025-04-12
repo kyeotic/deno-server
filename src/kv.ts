@@ -84,15 +84,10 @@ export async function upsert<T>(
   return item
 }
 
-export function associativeIndex<
-  Row,
-  Ref,
-  Prop extends Row[Prop] extends Array<infer I> ? keyof Row : never,
-  Val extends Row[Prop] extends Array<infer I> ? I : never
->(
-  prop: keyof Row,
-  keyer: (row: Row, item: Val) => Deno.KvKeyPart[],
-  selector: (row: Row) => Ref,
+export function associativeIndex<Row, Val, Ref>(
+  keyer: (row: Row, value: Val) => Deno.KvKeyPart[],
+  valueFn: (row: Row) => Val[],
+  refFn: (row: Row, value: Val) => Ref,
   comparator: (a: Val, b: Val) => boolean = isEqual
 ): (
   txn: Deno.AtomicOperation,
@@ -100,19 +95,16 @@ export function associativeIndex<
   existing: Row | null
 ) => Deno.AtomicOperation {
   return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) => {
-    if (!Array.isArray(value[prop])) {
-      throw new Error('index prop must be an array type')
-    }
-
-    const refs = (existing ? existing[prop] : []) as Val[]
+    const newVals = valueFn(value)
+    const oldVals = existing ? valueFn(value) : []
 
     // create new
-    differenceWith(value[prop], refs, comparator).forEach((e: Val) =>
-      txn.set(keyer(value, e), selector(value))
+    differenceWith(newVals, oldVals, comparator).forEach((e: Val) =>
+      txn.set(keyer(value, e), refFn(value, e))
     )
 
     // // delete old
-    differenceWith(value[prop] ?? [], refs, comparator).forEach((e: Val) =>
+    differenceWith(newVals, oldVals, comparator).forEach((e: Val) =>
       txn.delete(keyer(value, e))
     )
 
@@ -120,33 +112,33 @@ export function associativeIndex<
   }
 }
 
-export function singularIndex<
-  Row,
-  Prop extends Row[Prop] extends Deno.KvKeyPart ? keyof Row : never,
-  Ref
->(
-  prop: Prop,
+export function singularIndex<Row, Val, Ref>(
   /** Create a key from the row. Returning `null` will not create an index item */
   keyer: (row: Row) => Deno.KvKeyPart[] | null,
-  selector: (row: Row) => Ref
+  valueFn: (row: Row) => Val[] | null,
+  refFn: (row: Row) => Ref
 ): (
   txn: Deno.AtomicOperation,
   value: Row,
   existing: Row | null
 ) => Deno.AtomicOperation {
   return (txn: Deno.AtomicOperation, value: Row, existing: Row | null) => {
-    if (existing?.[prop] !== value[prop]) {
-      if (existing) {
-        const dbKey = keyer(existing)
-        if (!dbKey)
-          throw new Error('keyer must return a key for existing items')
-        txn.delete(dbKey)
-      }
-      const key = keyer(value)
-      if (key) {
-        txn.set(key, selector(value))
-      }
+    const key = keyer(value)
+
+    if (!key && !existing) return txn
+
+    const newVal = valueFn(value)
+
+    if (existing && valueFn(existing) !== newVal) {
+      const dbKey = keyer(existing)
+      if (!dbKey) throw new Error('keyer must return a key for existing items')
+      txn.delete(dbKey)
     }
+
+    if (key) {
+      txn.set(key, refFn(value))
+    }
+
     return txn
   }
 }
