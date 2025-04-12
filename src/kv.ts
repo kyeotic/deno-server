@@ -104,7 +104,7 @@ export function associativeIndex<Row, Val, Ref>(
     )
 
     // // delete old
-    differenceWith(newVals, oldVals, comparator).forEach((e: Val) =>
+    differenceWith(oldVals, newVals, comparator).forEach((e: Val) =>
       txn.delete(keyer(value, e))
     )
 
