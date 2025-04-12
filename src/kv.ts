@@ -138,7 +138,10 @@ export function singularIndex<
       if (existing) {
         txn.delete(keyer(existing))
       }
-      txn.set(keyer(value), selector(value))
+      const val = selector(value)
+      if (val) {
+        txn.set(keyer(value), val)
+      }
     }
     return txn
   }
