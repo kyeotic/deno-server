@@ -75,12 +75,14 @@ export async function put<T>(
 export async function upsert<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
-  merge: (existing: T | null) => T
+  merge: (existing: T | null, txn: Deno.AtomicOperation) => T
 ): Promise<T> {
   const existing = await kv.get(key)
-  const item = merge((existing?.value as T) ?? null)
+  const txn = kv.atomic()
 
-  await kv.atomic().check(existing).set(key, item).commit()
+  const item = merge((existing?.value as T) ?? null, txn)
+
+  await txn.check(existing).set(key, item).commit()
   return item
 }
 
