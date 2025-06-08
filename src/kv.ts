@@ -131,7 +131,7 @@ export function singularIndex<Row, Val, Ref>(
 
     const newVal = valueFn(value)
 
-    if (existing && valueFn(existing) !== newVal) {
+    if (existing && valueFn(existing) && valueFn(existing) !== newVal) {
       const dbKey = keyer(existing)
       if (!dbKey) throw new Error('keyer must return a key for existing items')
       txn.delete(dbKey)
