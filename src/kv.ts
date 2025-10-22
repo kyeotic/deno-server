@@ -33,7 +33,8 @@ export async function batchGet<T>(
 export async function create<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
-  item: T
+  item: T,
+  options?: Deno.KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
 
@@ -41,7 +42,7 @@ export async function create<T>(
     throw new Error('Item already exists')
   }
 
-  await kv.set(key, item)
+  await kv.set(key, item, options)
 
   return item
 }
@@ -49,7 +50,8 @@ export async function create<T>(
 export async function update<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
-  item: T
+  item: T,
+  options?: Deno.KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
 
@@ -57,7 +59,7 @@ export async function update<T>(
     throw new Error('Item not found')
   }
 
-  await kv.set(key, item)
+  await kv.set(key, item, options)
 
   return item
 }
@@ -65,9 +67,10 @@ export async function update<T>(
 export async function put<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
-  item: T
+  item: T,
+  options?: Deno.KvSetOptions
 ): Promise<T> {
-  await kv.set(key, item)
+  await kv.set(key, item, options)
 
   return item
 }
@@ -75,14 +78,15 @@ export async function put<T>(
 export async function upsert<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
-  merge: (existing: T | null, txn: Deno.AtomicOperation) => T
+  merge: (existing: T | null, txn: Deno.AtomicOperation) => T,
+  options?: Deno.KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
   const txn = kv.atomic()
 
   const item = merge((existing?.value as T) ?? null, txn)
 
-  await txn.check(existing).set(key, item).commit()
+  await txn.check(existing).set(key, item, options).commit()
   return item
 }
 
