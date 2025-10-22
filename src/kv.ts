@@ -1,6 +1,8 @@
 // @deno-types="npm:@types/lodash-es@^4"
 import { isEqual, differenceWith, chunk } from 'lodash'
 
+type KvSetOptions = Parameters<Deno.Kv['set']>[2]
+
 export function makeSet(
   name: Deno.KvKeyPart
 ): (...parts: Deno.KvKeyPart[]) => Deno.KvKeyPart[] {
@@ -34,7 +36,7 @@ export async function create<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
   item: T,
-  options?: Deno.KvSetOptions
+  options?: KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
 
@@ -51,7 +53,7 @@ export async function update<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
   item: T,
-  options?: Deno.KvSetOptions
+  options?: KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
 
@@ -68,7 +70,7 @@ export async function put<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
   item: T,
-  options?: Deno.KvSetOptions
+  options?: KvSetOptions
 ): Promise<T> {
   await kv.set(key, item, options)
 
@@ -79,7 +81,7 @@ export async function upsert<T>(
   kv: Deno.Kv,
   key: Deno.KvKeyPart[],
   merge: (existing: T | null, txn: Deno.AtomicOperation) => T,
-  options?: Deno.KvSetOptions
+  options?: KvSetOptions
 ): Promise<T> {
   const existing = await kv.get(key)
   const txn = kv.atomic()
