@@ -4,7 +4,9 @@
  */
 import { serveStatic } from '../src/serve.ts'
 
+const rootDir = Deno.env.get('SPA_ROOT')
+
 // deno-lint-ignore require-await
 Deno.serve(async (req: Request) => {
-  return serveStatic(req)
+  return serveStatic(req, { rootDir })
 })
