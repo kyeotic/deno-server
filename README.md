@@ -19,15 +19,7 @@ Deno Server provides a handler that falls back to the `index.html` whenever a 40
 deployctl deploy --prod --project=$PROJECT_NAME jsr:@kyeotic/server/spa
 ```
 
-If your build outputs to a subdirectory (e.g. `dist/`), you have two options:
-
-**Option 1:** Use the `--root` flag with `deployctl` (or `root` in the GitHub Actions `denoland/deployctl` step):
-
-```
-deployctl deploy --prod --project=$PROJECT_NAME --root dist/ jsr:@kyeotic/server/spa
-```
-
-**Option 2:** Set the `SPA_ROOT` environment variable in your Deno Deploy project settings:
+If your build outputs to a subdirectory (e.g. `dist/`), set the `SPA_ROOT` environment variable in your Deno Deploy project settings:
 
 ```
 SPA_ROOT=dist
